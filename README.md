@@ -1,5 +1,5 @@
 # Bemostore
-[Toko Topup Azur Lane BEMOSTORE](http://muhammad-fawwaz35-mentalhealthtracker1.pbp.cs.ui.ac.id)
+[Toko Topup Azur Lane BEMOSTORE](http://muhammad-fawwaz35-bemostore.pbp.cs.ui.ac.id)
 
 sebuah web topup oleh Muhammad Fawwaz E.F.S dengan NPM 2306275582
 
