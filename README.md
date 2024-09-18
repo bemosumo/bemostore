@@ -289,7 +289,7 @@ urlpatterns = [
 
 # Mengakses keempat URL di poin 2 menggunakan Postman
 ### 1. XML 
-![XML](iamges/XML.png)
+![XML](images/XML.png)
 ### 2. JSON
 ![JSON](images/JSON.png)
 ### 3. HTML
