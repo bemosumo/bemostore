@@ -3,6 +3,9 @@
 
 sebuah web topup oleh Muhammad Fawwaz E.F.S dengan NPM 2306275582
 
+<details>
+<summary> <b> Tugas 2: Implementasi Model-View-Template (MVT) pada Django </b> </summary>
+    
 # Penjelasan Implementasi
 ### 1. Membuat Proyek Django Baru
 Saya memulai dengan membuat repositori baru di github dengan nama bemostore, kemudian saya menduplikat repositori tersebut ke dalam file lokal. Selanjutnya saya membuat proyek django baru yang kemudian menghasilkan struktur folder utama Django, yaitu `bemostore/`. Di sini, Django secara otomatis menghasilkan file konfigurasi dasar seperti `settings.py`, `urls.py`, dan lainnya.
@@ -37,7 +40,7 @@ urlpatterns = [
 Di aplikasi main, saya mendefinisikan sebuah model Product di `models.py` yang memiliki atribut `name`, `price`, dan `description`. Model ini akan merepresentasikan tabel di database yang menyimpan produk dengan detail lengkap.
 
 Model `Product`:
-``` bash
+```bash
 from django.db import models
 
 class Product(models.Model):
@@ -94,6 +97,7 @@ urlpatterns = [
     path('', show_main, name='show_main'),
 ]
 ```
+
 ### 7. Deployment ke Pacil Web Service (PWS)
 Terakhir saya melakukan deployment aplikasi ke Pacil Web Service, platform yang memungkinkan untuk hosting aplikasi secara online.
 
@@ -117,3 +121,182 @@ Karena framework ini mudah dipahami, memiliki dokumentasi lengkap, dan mengikuti
 
 # Mengapa Model di Django Disebut sebagai ORM?
 Disebut sebagai ORM (Object-Relational Mapping) karena berfungsi sebagai penghubung antara objek Python dan tabel di database relasional. ORM memungkinkan pengembang bekerja dengan data dalam bentuk objek Python, sehingga mereka bisa melakukan operasi database seperti mengambil, menyimpan, atau menghapus data tanpa menulis kueri SQL secara langsung. ORM secara otomatis mengonversi operasi objek Python menjadi perintah SQL yang sesuai, memudahkan interaksi dengan database dan membuat kode lebih bersih serta mudah dipahami. 
+</details>
+
+<details>
+<summary> <b> Tugas 3: Implementasi Form dan Data Delivery pada Django </b> </summary>
+
+# Pentingnya Data Delivery dalam Platform
+
+Data delivery penting dalam platform untuk memastikan komunikasi yang efektif antar komponen seperti server, klien, dan basis data. Proses ini memungkinkan pertukaran informasi yang tepat, misalnya dalam aplikasi web di mana server mengirimkan data (seperti JSON) ke klien. Tanpa mekanisme ini, interaksi antara komponen tidak akan berjalan optimal, menyebabkan kinerja platform menurun.
+
+# Perbandingan XML dan JSON serta Popularitas JSON
+
+JSON lebih populer daripada XML karena lebih sederhana, ringan, dan mudah diproses, terutama di JavaScript. JSON menggunakan sintaks yang lebih ringkas dibandingkan XML yang memakai tag panjang. Selain itu, JSON lebih cepat diparsing dan didukung secara luas oleh berbagai bahasa pemrograman. XML tetap berguna untuk struktur data kompleks, namun JSON lebih efisien untuk pertukaran data modern.
+
+# Fungsi `is_valid()` pada Form Django
+
+Method `is_valid()` di Django memvalidasi data yang diinput dalam form. Jika data valid, method ini mengembalikan `True`, memungkinkan data diproses lebih lanjut. Jika tidak, pesan kesalahan ditampilkan. Fungsi ini penting untuk menjaga data yang masuk tetap konsisten dan aman, serta menghindari input yang berbahaya atau salah.
+
+# Pentingnya `csrf_token` pada Form di Django
+
+`csrf_token` melindungi aplikasi Django dari serangan CSRF, di mana penyerang mencoba mengirim permintaan tidak sah atas nama pengguna. Token ini memastikan bahwa setiap permintaan form datang dari sumber yang tepercaya. Tanpa `csrf_token`, aplikasi rentan terhadap serangan yang bisa mengakibatkan perubahan data atau tindakan tidak diinginkan.
+
+# Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step.
+
+### 1. Buat sebuah file `base.html` pada folder baru bernama `templates` pada direktori utama
+```bash
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block meta %} {% endblock meta %}
+  </head>
+
+  <body>
+    {% block content %} {% endblock content %}
+  </body>
+</html>
+```
+
+### 2. Menambahkan baris pada variabel `TEMPLATES` di `settings.py` agar `base.html` terbaca
+```bash
+...
+TEMPLATES :
+        ...
+        'DIRS': [BASE_DIR / 'templates'],
+        ...
+...
+```
+
+### 3. Tambahkan import uuid di `models.py` dan Lakukan Migration
+import uuid
+Kemudian, buat model yang menggunakan UUID, misalnya:
+
+```bash
+from django.db import models
+import uuid
+
+class Product(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
+    name = models.CharField(max_length=255)
+    price = models.IntegerField()
+    description = models.TextField()  
+```
+Setelah mengedit model, jalankan migrasi dengan perintah:
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 4. Buat file `forms.py` untuk Mengambil Data dari `models.py`
+```bash
+from django.forms import ModelForm
+from main.models import Product
+
+class ProductEntryForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ["name", "price", "description"]
+```
+
+### 5. Membuat file baru pada direktori `main/template` untuk tampilan dalam menambahkan item baru dengan nama `create_product_entry.html` 
+```bash
+{% extends 'base.html' %}
+{% block content %}
+<h1>Add New Product</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr> 
+            <td>
+                <input type="submit" value="Add Product" \>
+            </td>
+        </tr>
+    </table>
+</form>
+{% endblock content %}
+```
+
+### 6. Menambahkan fungsi pada `views.py` dan memodifikasi fungsi di dalamnya
+```bash
+from django.shortcuts import render, redirect   # Tambahkan import redirect di baris ini
+from main.forms import ProductEntryForm
+from main.models import Product
+from django.http import HttpResponse
+from django.core import serializers
+
+def show_main(request):
+    product_entries = Product.objects.all()
+
+    context = {
+        'name_aplikasi': 'bemostore',
+        'name': 'Muhammad Fawwaz Edsa Fatin Setiawan',
+        'npm' : '2306275582',
+        'class': 'PBP D',
+        'product_entries': product_entries
+    }
+
+    return render(request, "main.html", context)
+
+def create_product_entry(request):
+    form = ProductEntryForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_main')
+
+    context = {'form': form}
+    return render(request, "create_product_entry.html", context)
+
+def show_xml(request):
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json(request):
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_xml_by_id(request, id):
+    data = Product.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json_by_id(request, id):
+    data = Product.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+```
+
+### 7. Menambahkan routing url pada `urls.py` pada views yang telah ditambahkan
+```bash
+from django.urls import path
+from main.views import show_main, create_product_entry, show_xml, show_json, show_xml_by_id, show_json_by_id
+
+app_name = 'main'
+
+urlpatterns = [
+    path('', show_main, name='show_main'),
+    path('create-product-entry', create_product_entry, name='create_product_entry'),
+    path('xml/', show_xml, name='show_xml'),
+    path('json/', show_json, name='show_json'),
+    path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
+    path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
+]
+```
+
+# Mengakses keempat URL di poin 2 menggunakan Postman
+### 1. XML 
+![XML](XML.png)
+### 2. JSON
+![JSON](JSON.png)
+### 3. HTML
+![HTML](HTML.png)
+### 4. XML by ID
+![XML by ID](XML_by_ID.png)
+### 5. JSON by ID
+![JSON by ID](JSON_by_ID.png)
+
+</details>
