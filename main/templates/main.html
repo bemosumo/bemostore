@@ -2,18 +2,33 @@
 {% block content %}
 <h1>bemostore</h1>
 
-<h5>Name: </h5>
-<p>Muhammad Fawwaz Edsa Fatin Setiawan</p> <!--Ubah sesuai dengan nama kamu -->
-
-<h5>NPM: </h5>
-<p>2306275582</p> <!-- Ubah sesuai dengan npm kamu -->
-
-<h5>Class: </h5>
-<p>PBP D</p> <!-- Ubah sesuai dengan kelas kamu -->
+<p><strong>Name:</strong> <span class="normal-text">{{name}}</span></p>
+<p><strong>NPM:</strong> <span class="normal-text">{{npm}}</span></p>
+<p><strong>Class:</strong> <span class="normal-text">{{class}}</span></p>
 
 {% if not product_entries %}
 <p>Belum ada data product pada bemostore.</p>
 {% else %}
+<style>
+  table {
+    width: 50%;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 8px;
+    text-align: left;
+  }
+  th:first-child, td:first-child {
+    width: 20%; 
+  }
+  th:nth-child(2), td:nth-child(2){
+    width: 10%;
+  }
+  th:last-child, td:last-child {
+    width: 70%; 
+  }
+</style>
+
 <table>
   <tr>
     <th>Product Name</th>
@@ -31,6 +46,7 @@
   </tr>
   {% endfor %}
 </table>
+
 {% endif %}
 
 <br />
@@ -38,4 +54,11 @@
 <a href="{% url 'main:create_product_entry' %}">
   <button>Add New Product Entry</button>
 </a>
+
+<a href="{% url 'main:logout' %}">
+  <button>Logout</button>
+</a>
+<h5>Nama pengguna: {{ user }}</h5>
+<h5>Sesi terakhir login: {{ last_login }}</h5>
+
 {% endblock content %}
