@@ -19,7 +19,7 @@ def show_main(request):
 
     context = {
         'name_aplikasi': 'bemostore',
-        'name': 'Muhammad Fawwaz Edsa Fatin Setiawan',
+        'name': request.user.username,
         'npm' : '2306275582',
         'class': 'PBP D',
         'product_entries': product_entries,
