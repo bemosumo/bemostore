@@ -482,7 +482,7 @@ tombol logout pada `main.html`
 ```
 ### 5. Menghubungkan product dengan user
 Menambahkan field baru berupa `user` pada `models.py` agar masing-masing user dapat melihat product yang telah dibuat.
-```bash
+``` bash
     ...
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     ...
