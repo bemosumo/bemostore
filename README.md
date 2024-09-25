@@ -271,7 +271,7 @@ def show_json_by_id(request, id):
 ```
 
 ### 7. Menambahkan routing url pada `urls.py` pada views yang telah ditambahkan
-```bash
+```python
 from django.urls import path
 from main.views import show_main, create_product_entry, show_xml, show_json, show_xml_by_id, show_json_by_id
 
@@ -354,7 +354,7 @@ Tidak semua cookies aman. Cookies bisa saja digunakan untuk serangan seperti *se
 ### 1. Membuat fungsi register 
 Menambahkan fungsi `register` pada `views.py` dan membuat tampilannya dengan membuat `register.html` pada `\main\template`
 fungsi register pada `views.py` :
-``` bash
+``` python
 def register(request):
     form = UserCreationForm()
 
@@ -405,7 +405,7 @@ def register(request):
 ### 2. Membuat fungsi login 
 Menambahkan fungsi `login_user` pada `views.py` untuk login user yang telah registrasi dan membuat tampilannya dengan membuat `login.html` pada `\main\template`
 login pada `views.py`
-```bash
+```python
 def login_user(request):
    if request.method == 'POST':
       form = AuthenticationForm(data=request.POST)
@@ -459,7 +459,7 @@ def login_user(request):
 ```
 ### 3. Mmebuat fungsi logout
 Menambahkan fungsi `logout_user` pada `views.py` untuk logout user yang sedang login dan membuat tampilan tombol logout pada `main.html`.
-```bash
+```python
 def logout_user(request):
     logout(request)
     response = HttpResponseRedirect(reverse('main:login'))
@@ -467,13 +467,13 @@ def logout_user(request):
     return response
 ```
 tombol logout pada `main.html`
-```bash
+```python
 <a href="{% url 'main:logout' %}">
   <button>Logout</button>
 </a>
 ```
 ### 4. Menambahkan URL untuk setiap fungsi yang telah dibuat
-```bash
+```python
     ...
     path('register/', register, name='register'),
     path('login/', login_user, name='login'),
@@ -482,7 +482,7 @@ tombol logout pada `main.html`
 ```
 ### 5. Menghubungkan product dengan user
 Menambahkan field baru berupa `user` pada `models.py` agar masing-masing user dapat melihat product yang telah dibuat.
-``` bash
+```python
     ...
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     ...
@@ -494,7 +494,7 @@ python manage.py migrate
 ```
 ### 6. Menampilkan detail pengguna yang sedang login dan waktu sesi terakhir login
 menambahkan detail pengguna pada `views.py` yang menampilkan nama pengguna yang sudah login terlebih dahulu
-```bash
+```python
     @login_required(login_url='/login')
     ...
     'name': request.user.username,
