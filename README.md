@@ -300,3 +300,210 @@ urlpatterns = [
 ![JSON by ID](images/JSON_by_ID.png)
 
 </details>
+
+<details>
+<summary> <b> Tugas 4: Implementasi Autentikasi, Session, dan Cookies pada Django </b> </summary>
+    
+# Perbedaan antara `HttpResponseRedirect()` dan `redirect()` dalam Django:
+- `HttpResponseRedirect()`: Sebuah kelas di Django yang mengirimkan respons HTTP dengan kode status 302 (redirect). Biasanya, kita harus memberikan URL secara manual ke `HttpResponseRedirect`. 
+
+- `redirect()`: Fungsi ini adalah shortcut yang lebih nyaman daripada `HttpResponseRedirect`. Fungsi `redirect()` akan secara otomatis menangani URL, termasuk menerima nama tampilan (view name) atau objek model dan mengarahkan pengguna ke halaman yang tepat.
+
+ Dengan kata lain, `redirect()` adalah pembungkus di atas `HttpResponseRedirect`, yang lebih fleksibel dan mudah digunakan karena tidak hanya menerima URL tetapi juga nama view atau objek.
+
+# Cara kerja penghubungan model `Product` dengan `User`:
+Untuk menghubungkan model `Product` dengan `User`, biasanya kita menggunakan `ForeignKey` atau `ManyToManyField` dalam model Django. Misalnya, kita dapat memiliki hubungan "satu ke banyak" (one-to-many) di mana satu pengguna bisa memiliki banyak produk, tetapi setiap produk hanya dimiliki oleh satu pengguna.
+
+   Contoh model:
+
+   ```python
+    ...
+       owner = models.ForeignKey(User, on_delete=models.CASCADE)  # Hubungan dengan User
+    ...
+   ```
+
+Dalam contoh ini:
+- Model `Product` memiliki `ForeignKey` ke model `User`, yang artinya setiap produk dimiliki oleh seorang pengguna. Field `owner` menghubungkan produk dengan pengguna yang memiliki produk tersebut.
+- Jika pengguna dihapus, maka produk-produk yang dimilikinya juga akan dihapus berkat opsi `on_delete=models.CASCADE`.
+
+# Perbedaan antara authentication dan authorization:
+- **Authentication**: Proses memverifikasi identitas pengguna, misalnya memeriksa apakah username dan password cocok dengan yang ada di database.
+- **Authorization**: Proses memeriksa izin atau hak akses pengguna, yaitu menentukan apakah pengguna yang telah diotentikasi (authenticated) memiliki hak untuk melakukan tindakan tertentu (misalnya, mengakses halaman admin).
+
+**Saat pengguna login**, yang dilakukan pertama kali adalah proses *authentication* (pemeriksaan kredensial). Jika berhasil, pengguna diizinkan untuk masuk ke aplikasi. Setelah itu, *authorization* terjadi saat aplikasi memeriksa hak akses pengguna untuk fitur atau halaman tertentu.
+
+**Implementasi di Django**:
+- *Authentication* di Django biasanya dilakukan dengan sistem login bawaan (`django.contrib.auth`) yang memverifikasi username dan password pengguna.
+- *Authorization* dilakukan menggunakan mekanisme izin dan kelompok (permissions and groups) yang ada dalam model pengguna. Dengan cara ini, Django mengelola apa yang dapat diakses oleh setiap pengguna setelah mereka terotentikasi.
+
+# **Bagaimana Django mengingat pengguna yang telah login?**
+Django menggunakan **session** untuk mengingat pengguna yang telah login. Setelah pengguna berhasil login, Django akan menyimpan informasi sesi di server (biasanya dalam database) dan menambahkan cookie ke browser pengguna yang berisi ID sesi. Setiap kali pengguna melakukan permintaan baru, browser mengirimkan cookie ini, dan Django akan mencocokkannya dengan data sesi di server untuk mengidentifikasi pengguna yang telah login.
+
+**Kegunaan lain dari cookies:**
+- Cookies digunakan untuk melacak sesi pengguna (misalnya, di e-commerce, untuk keranjang belanja).
+- Digunakan untuk menyimpan preferensi pengguna, seperti tema atau bahasa.
+- Digunakan oleh layanan pihak ketiga (seperti Google Analytics) untuk pelacakan dan analisis.
+
+**Apakah semua cookies aman digunakan?**
+Tidak semua cookies aman. Cookies bisa saja digunakan untuk serangan seperti *session hijacking* atau *cross-site scripting (XSS)*. Oleh karena itu, penting untuk:
+- Menggunakan **Secure Cookies** (hanya dikirim melalui HTTPS).
+- Menggunakan **HttpOnly Cookies** (yang tidak dapat diakses oleh JavaScript, sehingga meminimalkan risiko XSS).
+- Mengatur **SameSite Cookies** untuk membatasi pengiriman cookies lintas situs.
+
+#  Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step.
+### 1. Membuat fungsi register 
+Menambahkan fungsi `register` pada `views.py` dan membuat tampilannya dengan membuat `register.html` pada `\main\template`
+fungsi register pada `views.py` :
+``` bash
+def register(request):
+    form = UserCreationForm()
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
+    context = {'form':form}
+    return render(request, 'register.html', context)
+```
+`regisster.html`
+```bash
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Register</title>
+{% endblock meta %}
+
+{% block content %}
+
+<div class="login">
+  <h1>Register</h1>
+
+  <form method="POST">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+      <tr>
+        <td></td>
+        <td><input type="submit" name="submit" value="Daftar" /></td>
+      </tr>
+    </table>
+  </form>
+
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+{% endblock content %}
+```
+### 2. Membuat fungsi login 
+Menambahkan fungsi `login_user` pada `views.py` untuk login user yang telah registrasi dan membuat tampilannya dengan membuat `login.html` pada `\main\template`
+login pada `views.py`
+```bash
+def login_user(request):
+   if request.method == 'POST':
+      form = AuthenticationForm(data=request.POST)
+
+      if form.is_valid():
+        user = form.get_user()
+        login(request, user)
+        response = HttpResponseRedirect(reverse("main:show_main"))
+        response.set_cookie('last_login', str(datetime.datetime.now()))
+        return response
+
+   else:
+      form = AuthenticationForm(request)
+   context = {'form': form}
+   return render(request, 'login.html', context)
+```
+`login.html`
+```bash
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Login</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="login">
+  <h1>Login</h1>
+
+  <form method="POST" action="">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+      <tr>
+        <td></td>
+        <td><input class="btn login_btn" type="submit" value="Login" /></td>
+      </tr>
+    </table>
+  </form>
+
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %} Don't have an account yet?
+  <a href="{% url 'main:register' %}">Register Now</a>
+</div>
+
+{% endblock content %}
+```
+### 3. Mmebuat fungsi logout
+Menambahkan fungsi `logout_user` pada `views.py` untuk logout user yang sedang login dan membuat tampilan tombol logout pada `main.html`.
+```bash
+def logout_user(request):
+    logout(request)
+    response = HttpResponseRedirect(reverse('main:login'))
+    response.delete_cookie('last_login')
+    return response
+```
+tombol logout pada `main.html`
+```bash
+<a href="{% url 'main:logout' %}">
+  <button>Logout</button>
+</a>
+```
+### 4. Menambahkan URL untuk setiap fungsi yang telah dibuat
+```bash
+    ...
+    path('register/', register, name='register'),
+    path('login/', login_user, name='login'),
+    path('logout/', logout_user, name='logout'),
+    ...
+```
+### 5. Menghubungkan product dengan user
+Menambahkan field baru berupa `user` pada `models.py` agar masing-masing user dapat melihat product yang telah dibuat.
+```bash
+    ...
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
+    ...
+```
+Jalankan migrasi
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+### 6. Menampilkan detail pengguna yang sedang login dan waktu sesi terakhir login
+menambahkan detail pengguna pada `views.py` yang menampilkan nama pengguna yang sudah login terlebih dahulu
+```bash
+    @login_required(login_url='/login')
+    ...
+    'name': request.user.username,
+    'last_login': request.COOKIES['last_login'],
+    ...
+```
+### 7. Menampilkan sesi login terakhir pengguna pada `main.html`
+```bash
+<h5>Sesi terakhir login: {{ last_login }}</h5>
+```
+
+</details>
