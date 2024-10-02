@@ -511,7 +511,7 @@ menambahkan detail pengguna pada `views.py` yang menampilkan nama pengguna yang 
 <details>
 <summary> <b> Tugas 5: Desain Web menggunakan HTML, CSS dan Framework CSS </b> </summary>
 
-### Urutan Prioritas CSS Selector
+#  Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
 Ketika sebuah elemen HTML memiliki lebih dari satu CSS selector yang bisa diterapkan, CSS memiliki aturan prioritas yang disebut *specificity*. Berikut adalah urutan prioritas dari yang paling rendah ke yang paling tinggi:
 
 - **Elemen (Tag) Selector**: Misalnya, `div`, `p`, `h1`. Selector ini memiliki prioritas paling rendah.
@@ -532,7 +532,7 @@ div { color: blue; }          /* Elemen selector */
 ```
 Dalam contoh di atas, warna teks akan menjadi **hijau** karena ID selector memiliki prioritas tertinggi.
 
-### Pentingnya *Responsive Design* dalam Pengembangan Aplikasi Web
+#  Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
 Responsive design adalah konsep di mana desain dan tata letak aplikasi web berubah secara dinamis berdasarkan ukuran layar atau perangkat pengguna, seperti ponsel, tablet, atau desktop. Konsep ini penting karena:
 
 - **Kenyamanan Pengguna**: Pengguna bisa mengakses aplikasi dari berbagai perangkat tanpa kehilangan kualitas pengalaman.
@@ -547,7 +547,7 @@ Responsive design adalah konsep di mana desain dan tata letak aplikasi web berub
 - **Belum Menerapkan**:
   - **Aplikasi lawas atau situs lama** yang hanya dirancang untuk desktop, seperti beberapa situs web yang belum di-upgrade atau situs web internal perusahaan yang dibuat khusus untuk desktop.
 
-### Perbedaan Margin, Border, dan Padding
+#  Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
 
 - **Margin**: Jarak di luar *border* elemen. *Margin* digunakan untuk membuat ruang antara elemen satu dengan elemen lainnya.
   
@@ -569,8 +569,7 @@ Dalam ilustrasi tersebut:
 - `border: 2px solid black;` memberikan garis di sekitar elemen.
 - `padding: 15px;` memberikan jarak di dalam elemen antara konten dan *border*.
 
-### Konsep Flexbox dan Grid Layout
-
+# Jelaskan konsep flex box dan grid layout beserta kegunaannya!
 - **Flexbox (Flexible Box Layout)**:
   Flexbox adalah modul CSS yang dirancang untuk menyusun item dalam satu dimensi (baris atau kolom). Flexbox sangat berguna untuk tata letak yang responsif dan dinamis.
 
@@ -609,8 +608,6 @@ Dalam ilustrasi tersebut:
 
   Pada contoh di atas, `.grid-container` memiliki 3 kolom yang masing-masing memiliki lebar sama (1fr). *Grid gap* mengatur jarak antar elemen grid.
 
-### Kesimpulan:
-- **Flexbox** digunakan untuk tata letak satu dimensi (sejajar baris atau kolom).
-- **Grid Layout** digunakan untuk tata letak dua dimensi (baris dan kolom).
-Keduanya sangat berguna untuk menciptakan desain yang responsif dan fleksibel sesuai ukuran layar pengguna.
+#  Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+
 </details>
