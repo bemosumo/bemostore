@@ -507,3 +507,110 @@ menambahkan detail pengguna pada `views.py` yang menampilkan nama pengguna yang 
 ```
 
 </details>
+
+<details>
+<summary> <b> Tugas 4: Implementasi Autentikasi, Session, dan Cookies pada Django </b> </summary>
+
+### 1. **Urutan Prioritas CSS Selector**
+Ketika sebuah elemen HTML memiliki lebih dari satu CSS selector yang bisa diterapkan, CSS memiliki aturan prioritas yang disebut *specificity*. Berikut adalah urutan prioritas dari yang paling rendah ke yang paling tinggi:
+
+- **Elemen (Tag) Selector**: Misalnya, `div`, `p`, `h1`. Selector ini memiliki prioritas paling rendah.
+- **Class Selector**: Misalnya, `.class-name`. Class lebih spesifik daripada elemen, jadi memiliki prioritas lebih tinggi.
+- **ID Selector**: Misalnya, `#id-name`. Selector ID lebih spesifik daripada class.
+- **Inline Style**: Gaya yang ditulis langsung pada elemen HTML, misalnya, `<p style="color: red;">`. Ini memiliki prioritas lebih tinggi daripada selector lainnya.
+- **!important**: Jika sebuah aturan CSS diberi tanda `!important`, itu akan selalu menang atas aturan lainnya, bahkan inline styles.
+
+**Urutan Contoh:**
+```html
+<div id="example" class="example-class">Hello, World!</div>
+```
+
+```css
+div { color: blue; }          /* Elemen selector */
+.example-class { color: red; } /* Class selector */
+#example { color: green; }     /* ID selector */
+```
+Dalam contoh di atas, warna teks akan menjadi **hijau** karena ID selector memiliki prioritas tertinggi.
+
+### 2. **Pentingnya *Responsive Design* dalam Pengembangan Aplikasi Web**
+Responsive design adalah konsep di mana desain dan tata letak aplikasi web berubah secara dinamis berdasarkan ukuran layar atau perangkat pengguna, seperti ponsel, tablet, atau desktop. Konsep ini penting karena:
+
+- **Kenyamanan Pengguna**: Pengguna bisa mengakses aplikasi dari berbagai perangkat tanpa kehilangan kualitas pengalaman.
+- **Peningkatan Keterjangkauan**: Desain yang responsif membantu situs web mencapai lebih banyak pengguna, terutama pengguna seluler yang terus meningkat.
+- **SEO Friendly**: Google memberikan peringkat lebih tinggi pada situs web yang responsif.
+  
+**Contoh Aplikasi yang Menerapkan Responsive Design**:
+- **Sudah Menerapkan**: 
+  - **YouTube**: Tata letak video berubah sesuai dengan ukuran layar, menyesuaikan navigasi dan jumlah kolom video yang ditampilkan.
+  - **Twitter**: Desain halaman utamanya berubah, baik untuk desktop maupun untuk ponsel.
+  
+- **Belum Menerapkan**:
+  - **Aplikasi lawas atau situs lama** yang hanya dirancang untuk desktop, seperti beberapa situs web yang belum di-upgrade atau situs web internal perusahaan yang dibuat khusus untuk desktop.
+
+### 3. **Perbedaan Margin, Border, dan Padding**
+
+- **Margin**: Jarak di luar *border* elemen. *Margin* digunakan untuk membuat ruang antara elemen satu dengan elemen lainnya.
+  
+- **Border**: Garis yang mengelilingi *padding* dan *content* dari sebuah elemen. *Border* terletak di antara *margin* dan *padding*.
+  
+- **Padding**: Jarak antara konten elemen dan *border*-nya. *Padding* digunakan untuk memberi ruang di dalam elemen, antara konten dan *border*.
+
+**Contoh Implementasi**:
+```css
+.div-example {
+  margin: 10px;        /* Jarak di luar elemen */
+  border: 2px solid black; /* Garis di sekitar padding */
+  padding: 15px;       /* Jarak di dalam border antara konten dan border */
+}
+```
+
+Dalam ilustrasi tersebut:
+- `margin: 10px;` menambahkan jarak di luar elemen.
+- `border: 2px solid black;` memberikan garis di sekitar elemen.
+- `padding: 15px;` memberikan jarak di dalam elemen antara konten dan *border*.
+
+### 4. **Konsep Flexbox dan Grid Layout**
+
+- **Flexbox (Flexible Box Layout)**:
+  Flexbox adalah modul CSS yang dirancang untuk menyusun item dalam satu dimensi (baris atau kolom). Flexbox sangat berguna untuk tata letak yang responsif dan dinamis.
+
+  **Kegunaan Flexbox**:
+  - Menyusun elemen dalam satu baris atau kolom.
+  - Mengatur aliran elemen secara otomatis, meski ukuran layar berubah.
+  - Membantu dalam penyelarasan dan distribusi ruang antar elemen dalam container.
+
+  **Contoh Flexbox**:
+  ```css
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  ```
+
+  Pada contoh di atas, elemen-elemen di dalam `.container` akan disusun dalam satu baris dengan jarak antar elemen yang sama (`justify-content: space-between`), dan semuanya akan disejajarkan di tengah secara vertikal (`align-items: center`).
+
+- **Grid Layout**:
+  Grid Layout adalah modul CSS yang lebih kompleks daripada Flexbox karena memungkinkan pengaturan tata letak dalam dua dimensi, yaitu baris dan kolom. Grid sangat cocok digunakan untuk membangun struktur halaman yang lebih kompleks, seperti tata letak halaman utama sebuah website.
+
+  **Kegunaan Grid Layout**:
+  - Membagi halaman menjadi grid yang terdiri dari baris dan kolom.
+  - Lebih mudah untuk membuat desain yang kompleks dengan berbagai ukuran elemen.
+  - Mengatur elemen-elemen di dalam layout dengan presisi tinggi.
+
+  **Contoh Grid Layout**:
+  ```css
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+  }
+  ```
+
+  Pada contoh di atas, `.grid-container` memiliki 3 kolom yang masing-masing memiliki lebar sama (1fr). *Grid gap* mengatur jarak antar elemen grid.
+
+### Kesimpulan:
+- **Flexbox** digunakan untuk tata letak satu dimensi (sejajar baris atau kolom).
+- **Grid Layout** digunakan untuk tata letak dua dimensi (baris dan kolom).
+Keduanya sangat berguna untuk menciptakan desain yang responsif dan fleksibel sesuai ukuran layar pengguna.
+</details>
