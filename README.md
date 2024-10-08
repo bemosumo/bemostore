@@ -709,9 +709,8 @@ def delete_product(request, id):
     return HttpResponseRedirect(reverse('main:show_main'))
 ```
 
-``` pyhton
 menyambugnkan path
-``` python
+```python
 from main.views import edit_mood
 ...
     path('delete/<uuid:id>', delete_product, name='delete_product'), 
@@ -719,7 +718,7 @@ from main.views import edit_mood
 ```
 
 ### 4. Menambahkan kedua fitur tersebut dan membuat tampilan untuk info produk pada halaman aplikasi
-``` html
+```html
 <div class="relative break-inside-avoid max-w-lg mx-auto">
     <div class="relative top-5 bg-indigo-100 shadow-md rounded-lg mb-6 break-inside-avoid flex flex-col border-2 border-indigo-300 p-6 transition-transform duration-300">
       <div class="bg-indigo-200 text-gray-800 p-4 rounded-t-lg border-b-2 border-indigo-300">
@@ -743,7 +742,7 @@ from main.views import edit_mood
 ```
 
 ### 5. Mmebuat `navbar.html` yang berfungsi untuk fitur aplikasi yang responsive pada mobile dan desktop
-``` html
+```html
 {% load static %}
 
 <!DOCTYPE html>
@@ -860,7 +859,7 @@ from main.views import edit_mood
 ```
 
 ### 6. Kustomisasi tampilan login dan register
-`logini.html`
+`login.html`
 ```html
 {% extends 'base.html' %}
 
