@@ -697,6 +697,8 @@ Tampilan untuk aplikasi
 ```
 
 ### 3. Menambahkan fitur delete produk
+
+method delete produk
 ```python
 def delete_product(request, id):
     # Get mood berdasarkan id
@@ -705,5 +707,299 @@ def delete_product(request, id):
     product.delete()
     # Kembali ke halaman awal
     return HttpResponseRedirect(reverse('main:show_main'))
+```
+
+``` pyhton
+menyambugnkan path
+``` python
+from main.views import edit_mood
+...
+    path('delete/<uuid:id>', delete_product, name='delete_product'), 
+
+```
+
+### 4. Menambahkan kedua fitur tersebut dan membuat tampilan untuk info produk pada halaman aplikasi
+``` html
+<div class="relative break-inside-avoid max-w-lg mx-auto">
+    <div class="relative top-5 bg-indigo-100 shadow-md rounded-lg mb-6 break-inside-avoid flex flex-col border-2 border-indigo-300 p-6 transition-transform duration-300">
+      <div class="bg-indigo-200 text-gray-800 p-4 rounded-t-lg border-b-2 border-indigo-300">
+        <h3 class="font-bold text-2xl mb-2">{{ product_entry.name }}</h3> <!-- Menampilkan nama produk -->
+        <p class="text-gray-600">Created by: {{ product_entry.user.username }}</p> <!-- Menampilkan nama user pembuat -->
+      </div>
+      <div class="p-4">
+        <p class="font-semibold text-2xl mb-4">Price: ${{ product_entry.price }}</p> <!-- Menampilkan harga produk -->
+        <p class="text-gray-700 text-lg mb-4">{{ product_entry.description }}</p> <!-- Menampilkan deskripsi produk -->
+      </div>
+      <div class="flex justify-between mt-6">
+        <a href="{% url 'main:edit_product' product_entry.pk %}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg w-full mr-2 text-center transition duration-300">
+          Edit Product
+        </a>
+        <a href="{% url 'main:delete_product' product_entry.pk %}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg w-full ml-2 text-center transition duration-300">
+          Delete Product
+        </a>
+      </div>
+    </div>
+</div>
+```
+
+### 5. Mmebuat `navbar.html` yang berfungsi untuk fitur aplikasi yang responsive pada mobile dan desktop
+``` html
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Navbar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .navbar {
+            background-color: #1b58bb;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .navbar .logo {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .navbar .logo img {
+            height: 40px; /* Sesuaikan ukuran logo */
+            margin-right: 10px;
+        }
+        .navbar .menu {
+            display: flex;
+            gap: 10px;
+        }
+        .navbar .menu a {
+            padding: 14px 20px;
+        }
+        .navbar .logout {
+            background-color: #E74C3C;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .navbar .logout:hover {
+            background-color: #C0392B;
+        }
+        /* Responsive for mobile */
+        @media (max-width: 768px) {
+            .navbar .menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                position: absolute;
+                top: 50px;
+                left: 0;
+                background-color: #1d85e5;
+            }
+            .navbar .menu.active {
+                display: flex;
+            }
+            .navbar .menu a {
+                text-align: center;
+                padding: 14px;
+                width: 100%;
+                border-bottom: 1px solid #ddd;
+            }
+            .navbar .hamburger {
+                display: block;
+                font-size: 24px;
+                cursor: pointer;
+            }
+        }
+        /* Hide hamburger in desktop */
+        .hamburger {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{% static 'image/FWPae6p.png' %}" alt="Logo" class="logo-image"> <!-- Path yang sudah diperbaiki -->
+            bemostore
+        </div>
+        <div class="hamburger"><i class="fas fa-bars"></i></div>
+        <div class="menu">
+            <a href="#">Home</a>
+            <a href="#">Products</a>
+            <a href="#">Categories</a>
+            <a href="#">Cart</a>
+            <a href="#">Welcome, {{user.username}}</a>
+            <a href="{% url 'main:logout' %}" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', function() {
+            document.querySelector('.menu').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
+```
+
+### 6. Kustomisasi tampilan login dan register
+`logini.html`
+```html
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Login</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center w-screen bg-blue-500 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <h2 class="mt-6 text-center text-black text-3xl font-extrabold text-gray-900">
+        Login to your account
+      </h2>
+    </div>
+    <form class="mt-8 space-y-6" method="POST" action="">
+      {% csrf_token %}
+      <input type="hidden" name="remember" value="true">
+      <div class="rounded-md shadow-sm -space-y-px">
+        <div>
+          <label for="username" class="sr-only">Username</label>
+          <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Username">
+        </div>
+        <div>
+          <label for="password" class="sr-only">Password</label>
+          <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Password">
+        </div>
+      </div>
+
+      <div>
+        <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Sign in
+        </button>
+      </div>
+    </form>
+
+    {% if messages %}
+    <div class="mt-4">
+      {% for message in messages %}
+      {% if message.tags == "success" %}
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+        {% elif message.tags == "error" %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+        {% else %}
+            <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <p class="text-sm text-black">
+        Don't have an account yet?
+        <a href="{% url 'main:register' %}" class="font-medium text-indigo-200 hover:text-indigo-300">
+          Register Now
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+```
+register.html
+```html
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Register</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-blue-500 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8 form-style">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-black">
+        Create your account
+      </h2>
+    </div>
+    <form class="mt-8 space-y-6" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="remember" value="true">
+      <div class="rounded-md shadow-sm -space-y-px">
+        {% for field in form %}
+          <div class="{% if not forloop.first %}mt-4{% endif %}">
+            <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-black">
+              {{ field.label }}
+            </label>
+            <div class="relative">
+              {{ field }}
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                {% if field.errors %}
+                  <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                {% endif %}
+              </div>
+            </div>
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div>
+        <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Register
+        </button>
+      </div>
+    </form>
+
+    {% if messages %}
+    <div class="mt-4">
+      {% for message in messages %}
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ message }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <p class="text-sm text-black">
+        Already have an account?
+        <a href="{% url 'main:login' %}" class="font-medium text-indigo-200 hover:text-indigo-300">
+          Login here
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock content %}
 ```
 </details>
