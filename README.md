@@ -1002,3 +1002,61 @@ register.html
 {% endblock content %}
 ```
 </details>
+
+<details>
+<summary> <b> Tugas 6: JavaScript dan AJAX </b> </summary>
+
+# Manfaat Penggunaan JavaScript dalam Pengembangan Aplikasi Web
+
+JavaScript memiliki peran penting dalam pengembangan aplikasi web karena berbagai manfaat berikut:
+- Interaktivitas: JavaScript memungkinkan halaman web menjadi lebih interaktif dengan menambahkan fitur-fitur seperti dropdown menu, modal window, validasi form, animasi, dan lain sebagainya. Ini meningkatkan pengalaman pengguna secara keseluruhan.
+- Pengolahan Dinamis Tanpa Refresh Halaman (AJAX): Dengan JavaScript, kamu dapat mengirim dan menerima data ke server menggunakan teknik AJAX tanpa harus memuat ulang seluruh halaman. Ini memungkinkan pembaruan konten secara dinamis dan efisien.
+- Kompatibilitas Antar Browser: JavaScript bekerja di hampir semua browser modern, memungkinkan aplikasi web berfungsi secara konsisten di berbagai perangkat.
+- Manipulasi DOM: JavaScript dapat memanipulasi dan memperbarui konten halaman web secara real-time. Ini sangat berguna dalam aplikasi interaktif yang mengandalkan perubahan konten tanpa memuat ulang halaman.
+- Pengolahan Data di Sisi Klien: JavaScript memungkinkan pemrosesan data langsung di browser pengguna, seperti validasi form atau manipulasi data, tanpa perlu mengirim permintaan ke server.
+
+# Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
+
+Fungsi await dalam JavaScript digunakan untuk menunggu penyelesaian dari sebuah Promise, seperti pada fetch() yang mengembalikan Promise ketika melakukan permintaan HTTP. Ketika kita menggunakan await di depan fetch(), program akan berhenti di baris tersebut hingga Promise yang dikembalikan oleh fetch() selesai, lalu melanjutkan eksekusi berikutnya dengan hasil respons.
+
+Contoh penggunaan await dalam fetch():
+
+```javascript
+async function getData() {
+    const response = await fetch('https://api.example.com/data');
+    const data = await response.json();
+    console.log(data);
+}
+```
+
+Jika kita tidak menggunakan await, maka fetch() akan berjalan secara asynchronous dan langsung melanjutkan baris kode berikutnya sebelum hasil dari fetch() tersedia. Akibatnya, kita mungkin mencoba mengakses data yang belum diambil atau diproses, yang dapat menyebabkan error.
+
+Contoh tanpa await:
+
+```javascript
+function getData() {
+    const response = fetch('https://api.example.com/data');
+    console.log(response);  // Ini akan menampilkan Promise, bukan data yang diinginkan
+}
+```
+
+# Mengapa Menggunakan csrf_exempt pada View untuk AJAX `POST`
+
+Decorator @csrf_exempt digunakan untuk menonaktifkan mekanisme perlindungan CSRF (Cross-Site Request Forgery) pada view yang memproses permintaan POST. Secara default, Django menambahkan token CSRF ke semua permintaan POST untuk memastikan bahwa permintaan berasal dari sumber yang sah (bukan dari situs eksternal yang berbahaya).
+
+Dalam konteks AJAX, jika kita tidak menyertakan token CSRF dalam permintaan POST, Django akan memblokir permintaan tersebut dan mengembalikan error CSRF. Oleh karena itu, untuk menghindari error ini ketika kita menggunakan AJAX POST, kita bisa menggunakan decorator csrf_exempt. Namun, ini harus digunakan dengan hati-hati, karena menonaktifkan perlindungan CSRF bisa membuka celah keamanan jika tidak ditangani dengan benar.
+
+Decorator ini berguna jika permintaan AJAX dilakukan dari sumber yang terkontrol dan aman, dan kita mungkin tidak menggunakan token CSRF pada sisi klien.
+
+# Mengapa Pembersihan Data Input Pengguna Dilakukan di Backend (Backend Validation)?
+
+Pembersihan data input pengguna di backend (server-side validation) sangat penting karena:
+- Keamanan: Validasi di frontend saja mudah dihindari oleh pengguna yang berniat jahat. Mereka bisa mematikan JavaScript atau memanipulasi data sebelum dikirim ke server. Validasi di backend melindungi aplikasi dari serangan seperti SQL injection dan Cross-Site Scripting (XSS), di mana input tidak valid atau berbahaya bisa memanipulasi sistem.
+- Konsistensi: Tidak semua pengguna memiliki akses ke JavaScript atau mungkin menonaktifkannya. Validasi di frontend membantu, tetapi jika frontend gagal melakukan validasi, backend harus tetap memastikan bahwa data yang diterima aman dan valid.
+- Integritas Data: Backend bertanggung jawab atas integritas data yang disimpan di database. Validasi backend memastikan bahwa hanya data yang benar-benar valid yang disimpan dan diproses oleh aplikasi.
+Pengendalian Terpusat: Validasi di backend memungkinkan kita memiliki satu tempat terpusat untuk mengontrol logika validasi. Ini membuat kode lebih mudah dipelihara dan diubah ketika aturan validasi berubah.
+
+Meskipun pembersihan di frontend memberikan pengalaman pengguna yang lebih baik (misalnya, dengan validasi langsung saat pengguna mengetik), backend tetap harus bertindak sebagai lapisan pertahanan terakhir untuk melindungi aplikasi dan memastikan keamanan serta keabsahan data yang masuk.
+
+
+</details>
