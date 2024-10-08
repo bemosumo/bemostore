@@ -2,12 +2,20 @@
 {% load static %}
 {% block meta %}
 <title>Create Product</title>
+<style>
+  .register-background {
+      background-image: url('{% static "image/azurlane.png" %}');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh; /* Mengisi seluruh tinggi layar */
+  }
+</style>
 {% endblock meta %}
 
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="flex flex-col min-h-screen bg-gray-100">
+<div class="register-background flex flex-col min-h-screen"> <!-- Menambahkan class 'register-background' -->
   <div class="container mx-auto px-4 py-8 mt-16 max-w-xl">
     <h1 class="text-3xl font-bold text-center mb-8 text-black">Create Product Entry</h1>
   

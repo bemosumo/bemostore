@@ -18,3 +18,21 @@
     background-size: 200% 100%;
     animation: shine 3s infinite;
 }
+
+body {
+    background-image: url('/static/image/azurlane.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+@font-face {
+    font-family: 'Xenia Cameo';
+    src: url("{% static 'fonts/XeniaCameo.ttf' %}") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+.bemostore-text {
+    font-family: 'Xenia Cameo', Arial, sans-serif;
+}

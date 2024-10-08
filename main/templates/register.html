@@ -1,43 +1,42 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Register</title>
+<style>
+  .register-background {
+      background-image: url('{% static "image/azurlane.png" %}');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh; /* Mengisi seluruh tinggi layar */
+  }
+</style>
 {% endblock meta %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center bg-blue-500 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full space-y-8 form-style">
+<div class="register-background flex items-center justify-center min-h-screen"> <!-- Flexbox untuk pusatkan form -->
+  <div class="max-w-md w-full space-y-8">
     <div>
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-black">
+      <h2 class="mt-6 text-center text-blue-500 text-3xl font-extrabold"> <!-- Mengubah warna teks jadi biru -->
         Create your account
       </h2>
     </div>
-    <form class="mt-8 space-y-6" method="POST">
+    <form class="mt-8 space-y-6" method="POST" action="">
       {% csrf_token %}
       <input type="hidden" name="remember" value="true">
-      <div class="rounded-md shadow-sm -space-y-px">
-        {% for field in form %}
-          <div class="{% if not forloop.first %}mt-4{% endif %}">
-            <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-black">
-              {{ field.label }}
-            </label>
-            <div class="relative">
-              {{ field }}
-              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                {% if field.errors %}
-                  <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                  </svg>
-                {% endif %}
-              </div>
-            </div>
-            {% if field.errors %}
-              {% for error in field.errors %}
-                <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-              {% endfor %}
-            {% endif %}
-          </div>
-        {% endfor %}
+      <div class="rounded-md shadow-sm space-y-4">
+        <div>
+          <label for="username" class="sr-only">Username</label>
+          <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Username">
+        </div>
+        <div>
+          <label for="password" class="sr-only">Password</label>
+          <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Password">
+        </div>
+        <div>
+          <label for="password_confirmation" class="sr-only">Password confirmation</label>
+          <input id="password_confirmation" name="password_confirmation" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Password confirmation">
+        </div>
       </div>
 
       <div>
@@ -47,20 +46,10 @@
       </div>
     </form>
 
-    {% if messages %}
-    <div class="mt-4">
-      {% for message in messages %}
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-        <span class="block sm:inline">{{ message }}</span>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-
     <div class="text-center mt-4">
-      <p class="text-sm text-black">
+      <p class="text-sm text-blue-500"> <!-- Mengubah warna teks jadi biru -->
         Already have an account?
-        <a href="{% url 'main:login' %}" class="font-medium text-indigo-200 hover:text-indigo-300">
+        <a href="{% url 'main:login' %}" class="font-medium text-indigo-600 hover:text-indigo-800">
           Login here
         </a>
       </p>
