@@ -1069,18 +1069,18 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.utils.html import strip_tags
-from .models import Item
+from .models import Product
 
 @csrf_exempt
 @require_POST
-def add_item_entry_ajax(request):
+def add_Product_entry_ajax(request):
     name = strip_tags(request.POST.get("name"))
     price = strip_tags(request.POST.get("price"))
     description = request.POST.get("description")
     user = request.user
 
-    new_item = Item(name=name, price=price, description=description, user=user)
-    new_item.save()
+    new_Product = Product(name=name, price=price, description=description, user=user)
+    new_Product.save()
 
     return HttpResponse(b"CREATED", status=201)
 ```
@@ -1092,7 +1092,7 @@ Tambahkan route baru di urls.py yang mengarah ke fungsi view add_product_entry_a
 from . import views
 
 urlpatterns = [
-    path('create-product-entry-ajax/', views.add_item_entry_ajax, name='add_product_entry_ajax'),
+    path('create-product-entry-ajax/', views.add_Product_entry_ajax, name='add_product_entry_ajax'),
 ]
 ```
 
@@ -1101,19 +1101,19 @@ urlpatterns = [
 Modifikasi bagian main.html untuk menampilkan daftar item secara dinamis menggunakan JavaScript. Buat container untuk item dan tambahkan kode JavaScript untuk mengambil dan menampilkan item menggunakan fetch().
 
 ```html
-<div id="item_entry_cards"></div>
+<div id="Product_entry_cards"></div>
 
 <script>
-async function refreshItemEntries() {
-    const itemEntries = await getItemEntries();
+async function refreshProductEntries() {
+    const ProductEntries = await getProductEntries();
     let htmlString = "";
     
-    if (itemEntries.length === 0) {
+    if (ProductEntries.length === 0) {
         htmlString = `<div class="flex flex-col items-center">
                         <p class="text-gray-600 mt-4">No items available.</p>
                       </div>`;
     } else {
-        itemEntries.forEach((item) => {
+        ProductEntries.forEach((Product) => {
             const name = DOMPurify.sanitize(item.fields.name);
             const description = DOMPurify.sanitize(item.fields.description);
             htmlString += `
@@ -1125,18 +1125,18 @@ async function refreshItemEntries() {
         });
     }
 
-    document.getElementById("item_entry_cards").innerHTML = htmlString;
+    document.getElementById("Product_entry_cards").innerHTML = htmlString;
 }
 
 async function getItemEntries() {
     return fetch("{% url 'main:show_json' %}").then(res => res.json());
 }
 
-refreshItemEntries();
+refreshProductEntries();
 </script>
 ```
 
-### 4. Membuat Modal untuk Menambahkan Item
+### 4. Membuat Modal untuk Menambahkan Product
 
 Tambahkan modal untuk form penambahan item baru secara asinkronus (AJAX).
 
@@ -1144,7 +1144,7 @@ Tambahkan modal untuk form penambahan item baru secara asinkronus (AJAX).
 <div id="crudModal" class="modal hidden">
     <div class="modal-content">
         <h3>Add New Item</h3>
-        <form id="itemEntryForm">
+        <form id="ProductEntryForm">
             <label>Name</label>
             <input type="text" id="name" name="name" required>
             
@@ -1169,30 +1169,30 @@ function hideModal() {
     document.getElementById('crudModal').classList.add('hidden');
 }
 
-document.getElementById("itemEntryForm").addEventListener("submit", (e) => {
+document.getElementById("ProductEntryForm").addEventListener("submit", (e) => {
     e.preventDefault();
-    addItemEntry();
+    addProductEntry();
 });
 
-function addItemEntry() {
-    fetch("{% url 'main:add_item_entry_ajax' %}", {
+function addProductEntry() {
+    fetch("{% url 'main:add_Product_entry_ajax' %}", {
         method: "POST",
-        body: new FormData(document.getElementById('itemEntryForm')),
+        body: new FormData(document.getElementById('ProductEntryForm')),
     })
     .then(() => {
-        refreshItemEntries();
+        refreshProductEntries();
         hideModal();
     });
 }
 </script>
 ```
 
-### 5. Routing untuk Menampilkan Data Item
-Untuk menampilkan daftar item milik pengguna yang sedang login, buat view show_json pada views.py:
+### 5. Routing untuk Menampilkan Data Product
+Untuk menampilkan daftar Product milik pengguna yang sedang login, buat view show_json pada views.py:
 
 ```python
 def show_json(request):
-    data = Item.objects.filter(user=request.user)
+    data = Product.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 ```
 
@@ -1211,8 +1211,9 @@ from django.utils.html import strip_tags
 
 name = strip_tags(request.POST.get("name"))
 description = strip_tags(request.POST.get("description"))
-html
-Copy code
+```
+
+```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.8/purify.min.js"></script>
 ```
 </details>
