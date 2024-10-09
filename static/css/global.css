@@ -27,12 +27,10 @@ body {
 }
 
 @font-face {
-    font-family: 'Xenia Cameo';
-    src: url("{% static 'fonts/XeniaCameo.ttf' %}") format("truetype");
+    font-family: 'XeniaCameo'; 
+    src: url("{% static 'font/xenia-cameo-c.ttf' %}") format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
-.bemostore-text {
-    font-family: 'Xenia Cameo', Arial, sans-serif;
-}
+
