@@ -1059,4 +1059,160 @@ Pengendalian Terpusat: Validasi di backend memungkinkan kita memiliki satu tempa
 Meskipun pembersihan di frontend memberikan pengalaman pengguna yang lebih baik (misalnya, dengan validasi langsung saat pengguna mengetik), backend tetap harus bertindak sebagai lapisan pertahanan terakhir untuk melindungi aplikasi dan memastikan keamanan serta keabsahan data yang masuk.
 
 
+# Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step
+
+### 1. Membuat Fungsi View untuk Menambahkan Item dengan AJAX
+Pada views.py, tambahkan fungsi yang akan menangani penambahan item menggunakan AJAX. Gunakan dekorator @csrf_exempt agar view tidak memerlukan token CSRF, namun tetap gunakan dengan hati-hati.
+
+```python
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse
+from django.utils.html import strip_tags
+from .models import Item
+
+@csrf_exempt
+@require_POST
+def add_item_entry_ajax(request):
+    name = strip_tags(request.POST.get("name"))
+    price = strip_tags(request.POST.get("price"))
+    description = request.POST.get("description")
+    user = request.user
+
+    new_item = Item(name=name, price=price, description=description, user=user)
+    new_item.save()
+
+    return HttpResponse(b"CREATED", status=201)
+```
+### 2. Menambahkan Route untuk AJAX
+
+Tambahkan route baru di urls.py yang mengarah ke fungsi view add_product_entry_ajax yang telah dibuat.
+
+```python
+from . import views
+
+urlpatterns = [
+    path('create-product-entry-ajax/', views.add_item_entry_ajax, name='add_product_entry_ajax'),
+]
+```
+
+### 3. Mengambil Data Item dengan Fetch API dan Menampilkannya
+
+Modifikasi bagian main.html untuk menampilkan daftar item secara dinamis menggunakan JavaScript. Buat container untuk item dan tambahkan kode JavaScript untuk mengambil dan menampilkan item menggunakan fetch().
+
+```html
+<div id="item_entry_cards"></div>
+
+<script>
+async function refreshItemEntries() {
+    const itemEntries = await getItemEntries();
+    let htmlString = "";
+    
+    if (itemEntries.length === 0) {
+        htmlString = `<div class="flex flex-col items-center">
+                        <p class="text-gray-600 mt-4">No items available.</p>
+                      </div>`;
+    } else {
+        itemEntries.forEach((item) => {
+            const name = DOMPurify.sanitize(item.fields.name);
+            const description = DOMPurify.sanitize(item.fields.description);
+            htmlString += `
+              <div class="item-card">
+                <h2>${name}</h2>
+                <p>${description}</p>
+                <p>Price: ${item.fields.price}</p>
+              </div>`;
+        });
+    }
+
+    document.getElementById("item_entry_cards").innerHTML = htmlString;
+}
+
+async function getItemEntries() {
+    return fetch("{% url 'main:show_json' %}").then(res => res.json());
+}
+
+refreshItemEntries();
+</script>
+```
+
+### 4. Membuat Modal untuk Menambahkan Item
+
+Tambahkan modal untuk form penambahan item baru secara asinkronus (AJAX).
+
+```html
+<div id="crudModal" class="modal hidden">
+    <div class="modal-content">
+        <h3>Add New Item</h3>
+        <form id="itemEntryForm">
+            <label>Name</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label>Price</label>
+            <input type="number" id="price" name="price" required>
+            
+            <label>Description</label>
+            <textarea id="description" name="description" required></textarea>
+            
+            <button type="submit">Save</button>
+        </form>
+        <button onclick="hideModal()">Cancel</button>
+    </div>
+</div>
+
+<script>
+function showModal() {
+    document.getElementById('crudModal').classList.remove('hidden');
+}
+
+function hideModal() {
+    document.getElementById('crudModal').classList.add('hidden');
+}
+
+document.getElementById("itemEntryForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    addItemEntry();
+});
+
+function addItemEntry() {
+    fetch("{% url 'main:add_item_entry_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.getElementById('itemEntryForm')),
+    })
+    .then(() => {
+        refreshItemEntries();
+        hideModal();
+    });
+}
+</script>
+```
+
+### 5. Routing untuk Menampilkan Data Item
+Untuk menampilkan daftar item milik pengguna yang sedang login, buat view show_json pada views.py:
+
+```python
+def show_json(request):
+    data = Item.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+```
+
+Tambahkan route di urls.py:
+
+```python
+path('show-json/', views.show_json, name='show_json'),
+```
+
+### 6. Mengelola Pembersihan Data Input (Backend & Frontend)
+Gunakan strip_tags di views.py untuk mengamankan data input dari pengguna.
+Di frontend, gunakan DOMPurify untuk membersihkan data yang ditampilkan di browser agar aman dari serangan XSS.
+
+```python
+from django.utils.html import strip_tags
+
+name = strip_tags(request.POST.get("name"))
+description = strip_tags(request.POST.get("description"))
+html
+Copy code
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.8/purify.min.js"></script>
+```
 </details>
